@@ -4,7 +4,7 @@
 
 ### Description
 
-This custom resource is deploys local files or S3 bucket objects to a destination bucket retaining their file-system 
+This custom resource deploys local files or S3 bucket objects to a destination bucket retaining their file-system 
 hierarchy.
 
 Two types of deployment sources are available:
@@ -72,21 +72,18 @@ class ExampleStack(Stack):
         S3LargeDeploymentResource(
             scope=self,
             name='ExampleLargeDeployment',
-            props=DeploymentProps(
-                sources=[
-                    AssetDeploymentSource(path='/path/to/your/local/directory'),
-                    AssetDeploymentSource(path='/path/to/your/local/zip/file.zip'),
-                    BucketDeploymentSource(
-                      bucket=..., 
-                      zip_object_key='your-source-bucket-object-key'
-                    ),
-                    ...
-                ],
-                destination_bucket=Bucket(...),
+            sources=[
+                AssetDeploymentSource(path='/path/to/your/local/directory'),
+                AssetDeploymentSource(path='/path/to/your/local/zip/file.zip'),
+                BucketDeploymentSource(
+                  bucket=..., 
+                  zip_object_key='your-source-bucket-object-key'
+                ),
                 ...
-            )
+            ],
+            destination_bucket=Bucket(...),
+            props=DeploymentProps(...)
         )
-        
         ...
 
         
