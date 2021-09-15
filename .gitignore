@@ -3,6 +3,7 @@
 
 ### AWS CDK ###
 cdk.out
+cdk.context.json
 
 ### dotenv ###
 .env

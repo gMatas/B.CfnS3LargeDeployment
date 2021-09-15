@@ -3,7 +3,8 @@ from functools import lru_cache
 from importlib.resources import path
 
 from aws_cdk.aws_efs import IAccessPoint
-from aws_cdk.aws_lambda import Code, SingletonFunction, Runtime, FileSystem as LambdaFileSystem
+from aws_cdk.aws_lambda import Code, Runtime, FileSystem as LambdaFileSystem, Function
+from aws_cdk.aws_s3 import Bucket
 from aws_cdk.core import Stack, Duration
 from aws_cdk.lambda_layer_awscli import AwsCliLayer
 
@@ -11,11 +12,12 @@ import b_cfn_s3_large_deployment
 from b_cfn_s3_large_deployment.deployment_props import DeploymentProps
 
 
-class S3LargeDeploymentFunction(SingletonFunction):
+class S3LargeDeploymentFunction(Function):
     def __init__(
             self,
             scope: Stack,
             name: str,
+            destination_bucket: Bucket,
             deployment_props: DeploymentProps,
             mount_path: str = None,
             access_point: IAccessPoint = None
@@ -27,7 +29,6 @@ class S3LargeDeploymentFunction(SingletonFunction):
         super().__init__(
             scope=scope,
             id=name,
-            uuid=f'{name}-uuid',
             function_name=name,
             code=self.__code(),
             timeout=Duration.minutes(15),
@@ -50,10 +51,13 @@ class S3LargeDeploymentFunction(SingletonFunction):
             )
         )
 
+        if deployment_props.vpc:
+            self.node.add_dependency(deployment_props.vpc)
+
         if access_point:
             self.node.add_dependency(access_point)
 
-        deployment_props.destination_bucket.grant_read_write(self)
+        destination_bucket.grant_read_write(self)
 
     @lru_cache
     def __code(self) -> Code:
