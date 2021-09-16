@@ -1,16 +1,15 @@
 import os
 from dataclasses import dataclass
-from importlib.resources import path
 
-from aws_cdk.aws_ec2 import Vpc, SubnetConfiguration, SubnetType, SubnetSelection
+from aws_cdk.aws_ec2 import SubnetConfiguration, SubnetType, Vpc, SubnetSelection
 from aws_cdk.aws_s3 import Bucket
 from aws_cdk.core import Construct, RemovalPolicy
 from b_aws_testing_framework.tools.cdk_testing.testing_stack import TestingStack
 
-import b_cfn_s3_large_deployment_tests
 from b_cfn_s3_large_deployment.deployment_props import DeploymentProps
 from b_cfn_s3_large_deployment.deployment_source import AssetDeploymentSource
 from b_cfn_s3_large_deployment.resource import S3LargeDeploymentResource
+from b_cfn_s3_large_deployment_tests.integration import ROOT_PATH
 
 
 class Infrastructure(TestingStack):
@@ -60,8 +59,7 @@ class Infrastructure(TestingStack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
-        with path(b_cfn_s3_large_deployment_tests, 'dummy_deployments') as deployment_dirpath:
-            dummy_deployments_dirpath = os.path.abspath(os.path.join(deployment_dirpath))
+        dummy_deployments_dirpath = os.path.join(ROOT_PATH, 'dummy_deployments')
 
         small_dummy_deployment_source = AssetDeploymentSource(
             os.path.join(dummy_deployments_dirpath, self.SMALL_DEPLOYMENT_OUTPUT_KEYS.source_name))
