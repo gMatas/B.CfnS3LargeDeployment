@@ -2,7 +2,7 @@ import logging
 
 from b_aws_testing_framework.credentials import Credentials
 
-from b_cfn_s3_large_deployment_tests.infrastructure import Infrastructure
+from b_cfn_s3_large_deployment_tests.integration.infrastructure import Infrastructure
 
 logger = logging.getLogger(__name__)
 
