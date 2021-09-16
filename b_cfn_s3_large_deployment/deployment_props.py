@@ -10,19 +10,13 @@ from b_cfn_s3_large_deployment.deployment_source import BaseDeploymentSource
 from b_cfn_s3_large_deployment.efs_props import EfsProps
 
 
-@dataclass
+@dataclass(frozen=True)
 class DeploymentProps:
     """
     Large deployment properties.
 
     Properties
     ----------
-
-    ``source``
-        The sources from which to deploy the contents of this bucket.
-
-    ``destination_bucket``
-        The S3 bucket to sync the contents of the zip file to.
 
     ``destination_key_prefix``
         Key prefix in the destination bucket. By default unzip to root of
@@ -136,8 +130,6 @@ class DeploymentProps:
         By default the Vpc default strategy is used if not specified otherwise.
     """
 
-    sources: List[BaseDeploymentSource]
-    destination_bucket: IBucket
     destination_key_prefix: str = None
     exclude: List[str] = None
     include: List[str] = None

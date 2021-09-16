@@ -33,9 +33,7 @@ class Action:
         """
         Creates a resource.
 
-        :return: A tuple containing two items:
-            1. Custom data to return back to CloudFormation service.
-            2. Physical resource id (can be empty).
+        :return: Create action result.
         """
 
         logger.info(f'Initiating resource creation with these properties: {json.dumps(self.__properties)}.')
@@ -52,9 +50,7 @@ class Action:
         """
         Updates a resource.
 
-        :return: A tuple containing two items:
-            1. Custom data to return back to CloudFormation service.
-            2. Physical resource id (can be empty).
+        :return: Update action result.
         """
 
         logger.info(f'Initiating resource update with these parameters: {json.dumps(self.__properties)}.')
@@ -81,9 +77,7 @@ class Action:
         """
         Deletes a resource.
 
-        :return: A tuple containing two items:
-            1. Custom data to return back to CloudFormation service.
-            2. Physical resource id (can be empty).
+        :return: Delete action result.
         """
 
         logger.info(f'Initiating resource deletion with these parameters: {json.dumps(self.__properties)}.')

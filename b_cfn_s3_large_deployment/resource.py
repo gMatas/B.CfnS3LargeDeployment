@@ -1,9 +1,16 @@
+from typing import Dict, List
+
 from aws_cdk.aws_ec2 import IVpc
 from aws_cdk.aws_efs import FileSystemProps, FileSystem, Acl, PosixUser
+from aws_cdk.aws_s3 import Bucket
 from aws_cdk.core import Stack, CustomResource, RemovalPolicy, Construct
 
 from b_cfn_s3_large_deployment.deployment_props import DeploymentProps
-from b_cfn_s3_large_deployment.deployment_source import DeploymentSourceContext
+from b_cfn_s3_large_deployment.deployment_source import (
+    DeploymentSourceContext,
+    DeploymentSourceConfig,
+    BaseDeploymentSource
+)
 from b_cfn_s3_large_deployment.efs_props import EfsProps
 from b_cfn_s3_large_deployment.function import S3LargeDeploymentFunction
 
@@ -13,14 +20,21 @@ class S3LargeDeploymentResource(CustomResource):
     Resource that handles S3 assets deployment with large-files support.
 
     See README file for possible limitations.
+
+    :param sources: The sources from which to deploy the contents of this bucket.
+    :param destination_bucket: The S3 bucket to sync the contents of the zip file to.
     """
 
     def __init__(
             self,
             scope: Stack,
             name: str,
-            props: DeploymentProps
+            sources: List[BaseDeploymentSource],
+            destination_bucket: Bucket,
+            props: DeploymentProps = None
     ):
+        props = props or DeploymentProps()
+
         if props.use_efs and not props.vpc:
             raise ValueError('Vpc must be specified if ``use_efs`` is set.')
 
@@ -48,15 +62,16 @@ class S3LargeDeploymentResource(CustomResource):
         function = S3LargeDeploymentFunction(
             scope,
             name=f'{name}Function',
+            destination_bucket=destination_bucket,
             deployment_props=props,
             mount_path=mount_path,
             access_point=access_point
         )
 
-        sources_configs = [
-            source.bind(scope, DeploymentSourceContext(handler_role=function.role))
-            for source in props.sources
-        ]
+        self.__sources_configs = {
+            source: source.bind(scope, DeploymentSourceContext(handler_role=function.role))
+            for source in sources
+        }
 
         super().__init__(
             scope,
@@ -64,9 +79,9 @@ class S3LargeDeploymentResource(CustomResource):
             service_token=function.function_arn,
             removal_policy=RemovalPolicy.DESTROY,
             properties={
-                'SourceBucketNames': [src.bucket.bucket_name for src in sources_configs],
-                'SourceObjectKeys': [src.zip_object_key for src in sources_configs],
-                'DestinationBucketName': props.destination_bucket.bucket_name,
+                'SourceBucketNames': [src.bucket.bucket_name for src in self.__sources_configs.values()],
+                'SourceObjectKeys': [src.zip_object_key for src in self.__sources_configs.values()],
+                'DestinationBucketName': destination_bucket.bucket_name,
                 'DestinationBucketKeyPrefix': props.destination_key_prefix,
                 'RetainOnDelete': props.retain_on_delete,
                 'Prune': props.prune,
@@ -74,6 +89,24 @@ class S3LargeDeploymentResource(CustomResource):
                 'Include': props.include,
             }
         )
+
+        if access_point:
+            self.node.add_dependency(access_point.file_system)
+
+        self.__destination_bucket = destination_bucket
+        self.__props = props
+
+    @property
+    def source_configs(self) -> Dict[BaseDeploymentSource, DeploymentSourceConfig]:
+        return self.__sources_configs.copy()
+
+    @property
+    def destination_bucket_name(self) -> str:
+        return self.__destination_bucket.bucket_name
+
+    @property
+    def destination_bucket_key_prefix(self) -> str:
+        return self.__props.destination_key_prefix
 
     @staticmethod
     def __get_efs_filesystem(scope: Construct, vpc: IVpc, efs_props: EfsProps) -> FileSystem:

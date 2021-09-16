@@ -22,9 +22,7 @@ def __handle(event, context) -> ActionResult:
     :param event: Invocation event.
     :param context: Invocation context.
 
-    :return: A tuple containing two items:
-        1. Custom data to return back to CloudFormation service (can be empty).
-        2. Physical resource id (can be empty).
+    :return: Requested action result.
     """
     serialized_event = json.dumps(event, default=lambda o: '<not serializable>')
     logger.info(f'Got new request. Event: {serialized_event}.')

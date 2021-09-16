@@ -7,7 +7,7 @@ from aws_cdk.aws_s3_assets import AssetOptions, Asset
 from aws_cdk.core import Construct
 
 
-@dataclass
+@dataclass(frozen=True)
 class DeploymentSourceConfig:
     """
     Bound deployment source configuration.
@@ -97,7 +97,6 @@ class AssetDeploymentSource(BaseDeploymentSource):
             exclude=self.__options.exclude,
             follow=self.__options.follow,
             ignore_mode=self.__options.ignore_mode,
-            follow_symlinks=self.__options.follow_symlinks,
             asset_hash=self.__options.asset_hash,
             asset_hash_type=self.__options.asset_hash_type,
             bundling=self.__options.bundling,
