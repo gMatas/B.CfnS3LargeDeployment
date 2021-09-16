@@ -90,9 +90,23 @@ class S3LargeDeploymentResource(CustomResource):
             }
         )
 
+        if access_point:
+            self.node.add_dependency(access_point.file_system)
+
+        self.__destination_bucket = destination_bucket
+        self.__props = props
+
     @property
     def source_configs(self) -> Dict[BaseDeploymentSource, DeploymentSourceConfig]:
         return self.__sources_configs.copy()
+
+    @property
+    def destination_bucket_name(self) -> str:
+        return self.__destination_bucket.bucket_name
+
+    @property
+    def destination_bucket_key_prefix(self) -> str:
+        return self.__props.destination_key_prefix
 
     @staticmethod
     def __get_efs_filesystem(scope: Construct, vpc: IVpc, efs_props: EfsProps) -> FileSystem:

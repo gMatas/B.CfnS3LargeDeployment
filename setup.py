@@ -35,9 +35,10 @@ setup(
         'aws-cdk.core>=1.90.0,<2.0.0',
         'aws-cdk.lambda-layer-awscli>=1.90.0,<2.0.0',
 
+        'b_aws_testing_framework>=0.6.0,<2.0.0',
+
         'boto3>=1.18.32<2.0.0',
         'urllib3>=1.26.6,<2.0.0',
-        'pytest>=6.2.0,<7.0.0',
     ],
     author='Matas Gumbinas',
     author_email='matas.gumbinas@biomapas.com',

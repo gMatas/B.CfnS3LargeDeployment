@@ -1,4 +1,5 @@
 import os
+from dataclasses import dataclass
 from importlib.resources import path
 
 from aws_cdk.aws_ec2 import Vpc, SubnetConfiguration, SubnetType, SubnetSelection
@@ -13,6 +14,23 @@ from b_cfn_s3_large_deployment.resource import S3LargeDeploymentResource
 
 
 class Infrastructure(TestingStack):
+    @dataclass(frozen=True)
+    class __DeploymentOutputKeys:
+        source_name: str
+        destination_bucket_name: str
+        destination_bucket_key_prefix: str
+
+    SMALL_DEPLOYMENT_OUTPUT_KEYS = __DeploymentOutputKeys(
+        source_name='small_dummy_deployment',
+        destination_bucket_name='SmallDeploymentDestinationBucketName',
+        destination_bucket_key_prefix='SmallDeploymentDestinationBucketPrefixKey',
+    )
+    LARGE_DEPLOYMENT_OUTPUT_KEYS = __DeploymentOutputKeys(
+        source_name='large_dummy_deployment',
+        destination_bucket_name='LargeDeploymentDestinationBucketName',
+        destination_bucket_key_prefix='LargeDeploymentDestinationBucketPrefixKey',
+    )
+
     def __init__(self, scope: Construct):
         super().__init__(scope=scope)
 
@@ -43,14 +61,14 @@ class Infrastructure(TestingStack):
         )
 
         with path(b_cfn_s3_large_deployment_tests, 'dummy_deployments') as deployment_dirpath:
-            dummy_deployments_dirpath = os.path.join(deployment_dirpath)
+            dummy_deployments_dirpath = os.path.abspath(os.path.join(deployment_dirpath))
 
         small_dummy_deployment_source = AssetDeploymentSource(
-            os.path.join(dummy_deployments_dirpath, 'small_dummy_deployment.zip'))
+            os.path.join(dummy_deployments_dirpath, self.SMALL_DEPLOYMENT_OUTPUT_KEYS.source_name))
         large_dummy_deployment_source = AssetDeploymentSource(
-            os.path.join(dummy_deployments_dirpath, 'large_dummy_deployment.zip'))
+            os.path.join(dummy_deployments_dirpath, self.LARGE_DEPLOYMENT_OUTPUT_KEYS.source_name))
 
-        S3LargeDeploymentResource(
+        small_deployment = S3LargeDeploymentResource(
             scope=self,
             name=f'{self.global_prefix()}SmallDummyDeployment',
             sources=[
@@ -63,7 +81,7 @@ class Infrastructure(TestingStack):
             )
         )
 
-        S3LargeDeploymentResource(
+        large_deployment = S3LargeDeploymentResource(
             scope=self,
             name=f'{self.global_prefix()}LargeDummyDeployment',
             sources=[
@@ -79,3 +97,14 @@ class Infrastructure(TestingStack):
                 vpc_subnets=SubnetSelection(subnets=testing_vpc.private_subnets)
             )
         )
+
+        self.__add_deployment_outputs(self.SMALL_DEPLOYMENT_OUTPUT_KEYS, small_deployment)
+        self.__add_deployment_outputs(self.LARGE_DEPLOYMENT_OUTPUT_KEYS, large_deployment)
+
+    def __add_deployment_outputs(
+            self,
+            deployment_output_keys: __DeploymentOutputKeys,
+            deployment: S3LargeDeploymentResource,
+    ) -> None:
+        self.add_output(deployment_output_keys.destination_bucket_name, deployment.destination_bucket_name)
+        self.add_output(deployment_output_keys.destination_bucket_key_prefix, deployment.destination_bucket_key_prefix)
