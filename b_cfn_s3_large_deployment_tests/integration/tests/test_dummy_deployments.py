@@ -1,11 +1,10 @@
 import logging
 import os
-from importlib.resources import path
 
 from b_aws_testing_framework.credentials import Credentials
 
-import b_cfn_s3_large_deployment_tests
-from b_cfn_s3_large_deployment_tests.infrastructure import Infrastructure
+from b_cfn_s3_large_deployment_tests.integration import ROOT_PATH
+from b_cfn_s3_large_deployment_tests.integration.infrastructure import Infrastructure
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +14,7 @@ def test_small_deployment_deployed() -> None:
     destination_bucket_name = Infrastructure.get_output(deployment_output_keys.destination_bucket_name)
     destination_bucket_key_prefix = Infrastructure.get_output(deployment_output_keys.destination_bucket_key_prefix)
 
-    with path(b_cfn_s3_large_deployment_tests, 'dummy_deployments') as deployment_dirpath:
-        dummy_deployments_dirpath = os.path.abspath(os.path.join(deployment_dirpath))
+    dummy_deployments_dirpath = os.path.join(ROOT_PATH, 'dummy_deployments')
 
     # Require only files marked with '.deploy' suffix to be deployed.
     required_files = {
@@ -41,8 +39,7 @@ def test_large_deployment_deployed() -> None:
     destination_bucket_name = Infrastructure.get_output(deployment_output_keys.destination_bucket_name)
     destination_bucket_key_prefix = Infrastructure.get_output(deployment_output_keys.destination_bucket_key_prefix)
 
-    with path(b_cfn_s3_large_deployment_tests, 'dummy_deployments') as deployment_dirpath:
-        dummy_deployments_dirpath = os.path.abspath(os.path.join(deployment_dirpath))
+    dummy_deployments_dirpath = os.path.join(ROOT_PATH, 'dummy_deployments')
 
     # Require only files marked with '.deploy' suffix to be deployed.
     required_files = {

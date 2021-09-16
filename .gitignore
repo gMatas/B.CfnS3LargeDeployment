@@ -168,15 +168,16 @@ pip-selfcheck.json
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
 
+### MacOS ###
+__MACOSX/
+.DS_Store
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
-
-### MacOS ###
-.DS_Store
 
 # Dump file
 *.stackdump
