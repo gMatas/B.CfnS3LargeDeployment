@@ -18,7 +18,8 @@ setup(
         # Exclude virtual environment.
         'venv',
         # Exclude test source files.
-        'b_cfn_s3_large_deployment_tests'
+        'b_cfn_s3_large_deployment_tests',
+        'b_cfn_s3_large_deployment_tests.*',
     ]),
     description=(
         'AWS CDK custom resource that handles large files deployment to S3 bucket.'
