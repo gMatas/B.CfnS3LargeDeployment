@@ -3,4 +3,4 @@ include LICENSE
 include README.md
 include HISTORY.md
 
-recursive-include b_cfn_s3_large_deployment_tests/integration *.deploy
+# recursive-include b_cfn_s3_large_deployment_tests/integration *.deploy

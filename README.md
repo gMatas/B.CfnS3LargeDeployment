@@ -1,3 +1,5 @@
+![Pipeline](https://github.com/Biomapas/B.CfnS3LargeDeployment/workflows/Pipeline/badge.svg?branch=main)
+
 # B.CfnS3LargeDeployment
 
 **b-cfn-s3-large-deployment** - AWS CDK custom resource that handles large files deployment to S3 bucket.

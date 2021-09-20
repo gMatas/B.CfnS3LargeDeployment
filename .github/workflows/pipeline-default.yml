@@ -38,4 +38,4 @@ jobs:
           from b_aws_testing_framework.tools.cdk_testing.testing_manager import TestingManager; \
           TestingManager.set_global_prefix(); \
           "
-          cd b_cfn_s3_large_deployment_tests/integration/ && cdk synth && cd ..
+          cd b_cfn_s3_large_deployment_tests/integration/ && cdk synth && cd ../..
