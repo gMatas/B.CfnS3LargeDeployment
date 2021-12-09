@@ -3,10 +3,9 @@ from typing import List
 
 from aws_cdk.aws_ec2 import IVpc, SubnetSelection
 from aws_cdk.aws_iam import IRole
-from aws_cdk.aws_s3 import IBucket, StorageClass
+from aws_cdk.aws_s3 import StorageClass
 from aws_cdk.core import Expiration
 
-from b_cfn_s3_large_deployment.deployment_source import BaseDeploymentSource
 from b_cfn_s3_large_deployment.efs_props import EfsProps
 
 

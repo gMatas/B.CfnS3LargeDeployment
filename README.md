@@ -28,7 +28,7 @@ the community.
 
 ### Related technology
 
-- Python 3.8
+- Python >= 3.8
 - Amazon Web Services (AWS)
 
 ### Assumptions
@@ -57,6 +57,15 @@ pip install b-cfn-s3-large-deployment
 ```
 
 ### Usage & Examples
+
+This AWS CloudFormation custom resource is used pretty much the same way as any other resource. Simply initialize it 
+within any valid CDK scope giving it unique name/id, providing source(-s) and the destination for the deployment. 
+
+Optionally, if there's a need for larger files deployment than what AWS Lambda's `/tmp` directory supports, setting the 
+`DeploymentPops.use_efs` and `DeploymentPops.efs_props` fields, AWS Elastic File Storage (EFS) can be enabled to allow 
+such files handling.
+
+A simple example of `S3LargeDeploymentResource` usage is shown below:
 
 ```python
 from aws_cdk.core import App, Stack, Construct
@@ -94,6 +103,34 @@ ExampleStack(app, 'ExampleStack')
 
 app.synth()
 ```
+
+Here, three types of supported sources were used:
+
+1. whole, local directory given as a path, which is then deployed to the assets bucket as a .zip object: 
+
+    ```python 
+    AssetDeploymentSource(path='/path/to/your/local/directory')
+    ```
+   
+2. single .zip file given as a path, which is then deployed to the assets bucket:
+    
+    ```python 
+    AssetDeploymentSource(path='/path/to/your/local/zip/file.zip')
+    ```
+
+3. Single .zip S3 object found in the source bucket, given as an object key. No further pre-processing is 
+  applied in this case:
+    
+    ```python
+    BucketDeploymentSource(
+       bucket=...,
+       zip_object_key='your-source-bucket-object-key'
+    )
+    ```
+
+In all of these cases, final, source .zip objects are extracted inside `S3LargeDeploymentResource`'s handler 
+function storage and the available contents are then deployed to the configured destination. This is all done, while 
+maintaining original file structure of source contents.
 
 ### Known limits
 
