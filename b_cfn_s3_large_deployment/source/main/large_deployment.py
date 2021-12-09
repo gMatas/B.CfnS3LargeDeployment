@@ -29,8 +29,8 @@ class LargeDeployment:
     include: List[str]
 
     def __post_init__(self):
-        self.destination_bucket_key_prefix = self.__format_bucket_key_prefix(self.destination_bucket_key_prefix)
-        self.old_destination_bucket_key_prefix = self.__format_bucket_key_prefix(self.old_destination_bucket_key_prefix)
+        self.destination_bucket_key_prefix = self.__normalize_bucket_key_prefix(self.destination_bucket_key_prefix)
+        self.old_destination_bucket_key_prefix = self.__normalize_bucket_key_prefix(self.old_destination_bucket_key_prefix)
 
     @property
     def s3_source_objects_uris(self) -> List[str]:
@@ -106,8 +106,8 @@ class LargeDeployment:
         return system_args + user_args + ['--metadata-directive', 'REPLACE']
 
     @staticmethod
-    def __format_bucket_key_prefix(prefix: str) -> str:
-        return os.path.join('/', prefix)[1:]
+    def __normalize_bucket_key_prefix(prefix: str) -> str:
+        return '/'.join(_ for _ in prefix.split('/') if _)
 
 
 def aws_command(*args) -> None:
