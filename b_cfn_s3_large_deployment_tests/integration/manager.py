@@ -5,7 +5,7 @@ from b_aws_testing_framework.tools.cdk_testing.cdk_tool_config import CdkToolCon
 from b_aws_testing_framework.tools.cdk_testing.testing_manager import TestingManager
 
 GLOBAL_PREFIX = os.getenv('GLOBAL_PREFIX')
-CDK_PATH = f'{os.path.dirname(os.path.abspath(__file__))}'
+CDK_PATH = os.path.dirname(os.path.abspath(__file__))
 GLOBAL_MANAGER = TestingManager(Credentials(), CdkToolConfig(CDK_PATH))
 
 if GLOBAL_PREFIX:
