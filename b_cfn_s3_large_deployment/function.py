@@ -1,6 +1,5 @@
 import os
 from functools import lru_cache
-from importlib.resources import path
 
 from aws_cdk.aws_efs import IAccessPoint
 from aws_cdk.aws_lambda import Code, Runtime, FileSystem as LambdaFileSystem, Function
@@ -8,11 +7,13 @@ from aws_cdk.aws_s3 import Bucket
 from aws_cdk.core import Stack, Duration
 from aws_cdk.lambda_layer_awscli import AwsCliLayer
 
-import b_cfn_s3_large_deployment
 from b_cfn_s3_large_deployment.deployment_props import DeploymentProps
 
 
 class S3LargeDeploymentFunction(Function):
+    from . import source
+    SOURCE_PATH = os.path.dirname(source.__file__)
+
     def __init__(
             self,
             scope: Stack,
@@ -61,8 +62,7 @@ class S3LargeDeploymentFunction(Function):
 
     @lru_cache
     def __code(self) -> Code:
-        with path(b_cfn_s3_large_deployment, 'source') as source_path:
-            return Code.from_asset(os.path.join(source_path))
+        return Code.from_asset(self.SOURCE_PATH)
 
     @property
     def function_name(self):
