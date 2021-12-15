@@ -89,7 +89,7 @@ class Infrastructure(TestingStack):
             props=DeploymentProps(
                 destination_key_prefix='large/',
                 retain_on_delete=False,
-                memory_limit=256,
+                memory_limit=1024,
                 use_efs=True,
                 vpc=testing_vpc,
                 vpc_subnets=SubnetSelection(subnets=testing_vpc.private_subnets)
