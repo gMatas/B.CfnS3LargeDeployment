@@ -44,11 +44,11 @@ class Infrastructure(TestingStack):
                     subnet_type=SubnetType.PUBLIC,
                     cidr_mask=22
                 ),
-                SubnetConfiguration(
-                    name=f'{self.global_prefix()}LargeDeploymentVpcPrivateSubnet',
-                    subnet_type=SubnetType.PRIVATE,
-                    cidr_mask=22
-                )
+                # SubnetConfiguration(
+                #     name=f'{self.global_prefix()}LargeDeploymentVpcPrivateSubnet',
+                #     subnet_type=SubnetType.PRIVATE,
+                #     cidr_mask=22
+                # )
             ]
         )
 
@@ -92,7 +92,7 @@ class Infrastructure(TestingStack):
                 memory_limit=256,
                 use_efs=True,
                 vpc=testing_vpc,
-                vpc_subnets=SubnetSelection(subnets=testing_vpc.private_subnets)
+                vpc_subnets=SubnetSelection(subnets=testing_vpc.public_subnets)
             )
         )
 
