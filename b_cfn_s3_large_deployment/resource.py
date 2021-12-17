@@ -90,6 +90,7 @@ class S3LargeDeploymentResource(CustomResource):
             }
         )
 
+        self.node.add_dependency(function)
         if access_point:
             self.node.add_dependency(access_point.file_system)
 

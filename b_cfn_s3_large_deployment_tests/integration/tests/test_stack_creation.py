@@ -1,6 +1,7 @@
 import logging
 
-from b_aws_testing_framework.credentials import Credentials
+from b_aws_cf.stack import Stack
+from b_aws_cf.stack_status import StackStatus
 
 from b_cfn_s3_large_deployment_tests.integration.infrastructure import Infrastructure
 
@@ -13,9 +14,6 @@ def test_stack_created() -> None:
     :return: No return.
     """
 
-    client = Credentials().boto_session.client('cloudformation')
-
-    stacks = client.list_stacks(StackStatusFilter=['CREATE_COMPLETE'])['StackSummaries']
-    stacks = [stack['StackName'] for stack in stacks]
-
-    assert Infrastructure.name() in stacks
+    stack_name = Infrastructure.name()
+    stack = Stack.from_name(stack_name)
+    assert stack.stack_status == StackStatus.CREATE_COMPLETE
