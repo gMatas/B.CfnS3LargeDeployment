@@ -1,5 +1,6 @@
 import os
 from functools import lru_cache
+from typing import cast
 
 from aws_cdk.aws_efs import IAccessPoint
 from aws_cdk.aws_lambda import Code, Runtime, FileSystem as LambdaFileSystem, Function
@@ -34,13 +35,14 @@ class S3LargeDeploymentFunction(Function):
             code=self.__code(),
             timeout=Duration.minutes(15),
             handler='main.index.handler',
-            runtime=Runtime.PYTHON_3_7,
+            runtime=cast(Runtime, Runtime.PYTHON_3_7),
             layers=[
                 AwsCliLayer(scope, f'{name}AwsCliLayer')
             ],
             environment=None if not deployment_props.use_efs else {
                 'MOUNT_PATH': mount_path
             },
+            ephemeral_storage_size=deployment_props.ephemeral_storage_size,
             role=deployment_props.role,
             memory_size=deployment_props.memory_limit,
             vpc=deployment_props.vpc,

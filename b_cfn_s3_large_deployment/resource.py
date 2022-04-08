@@ -14,8 +14,13 @@ from b_cfn_s3_large_deployment.deployment_source import (
 from b_cfn_s3_large_deployment.efs_props import EfsProps
 from b_cfn_s3_large_deployment.function import S3LargeDeploymentFunction
 
+__all__ = [
+    'S3LargeDeployment',
+    'S3LargeDeploymentResource',
+]
 
-class S3LargeDeploymentResource(CustomResource):
+
+class S3LargeDeployment(CustomResource):
     """
     Resource that handles S3 assets deployment with large-files support.
 
@@ -137,3 +142,7 @@ class S3LargeDeploymentResource(CustomResource):
             throughput_mode=file_system_props.throughput_mode,
             vpc_subnets=file_system_props.vpc_subnets
         )
+
+
+# Alias for backward compatibility.
+S3LargeDeploymentResource = S3LargeDeployment

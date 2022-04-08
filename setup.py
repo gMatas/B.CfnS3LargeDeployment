@@ -30,7 +30,7 @@ setup(
     install_requires=[
         'aws-cdk.aws-ec2>=1.90.0,<2.0.0',
         'aws-cdk.aws-iam>=1.90.0,<2.0.0',
-        'aws-cdk.aws-lambda>=1.90.0,<2.0.0',
+        'aws-cdk.aws-lambda>=1.152.0,<2.0.0',
         'aws-cdk.aws-s3>=1.90.0,<2.0.0',
         'aws-cdk.aws-s3-assets>=1.90.0,<2.0.0',
         'aws-cdk.core>=1.90.0,<2.0.0',
