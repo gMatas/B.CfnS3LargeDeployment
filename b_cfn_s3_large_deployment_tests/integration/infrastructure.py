@@ -69,6 +69,8 @@ class Infrastructure(TestingStack):
         small_dummy_deployment_source = AssetDeploymentSource(
             os.path.join(dummy_deployments_dirpath, self.SMALL_DEPLOYMENT_OUTPUT_KEYS.source_name))
         large_dummy_deployment_source = AssetDeploymentSource(
+            os.path.join(dummy_deployments_dirpath, self.LARGE_DEPLOYMENT_OUTPUT_KEYS.source_name))
+        large_dummy_efs_deployment_source = AssetDeploymentSource(
             os.path.join(dummy_deployments_dirpath, self.LARGE_EFS_DEPLOYMENT_OUTPUT_KEYS.source_name))
 
         small_deployment = S3LargeDeploymentResource(
@@ -98,7 +100,7 @@ class Infrastructure(TestingStack):
         large_efs_deployment = S3LargeDeploymentResource(
             scope=self,
             name=f'{self.global_prefix()}LargeEfsDummyDeployment',
-            sources=[large_dummy_deployment_source],
+            sources=[large_dummy_efs_deployment_source],
             destination_bucket=testing_destination_bucket,
             props=DeploymentProps(
                 destination_key_prefix='large-efs/',
