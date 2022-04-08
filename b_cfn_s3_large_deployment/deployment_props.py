@@ -29,7 +29,7 @@ class DeploymentProps:
         evaluated when invalidating the asset), you should leverage the ``exclude`` property of
         ``AssetOptions`` when defining your source.
 
-        By default no exclude filters are used.
+        By default, no exclude filters are used.
 
         More info: https://docs.aws.amazon.com/cli/latest/reference/s3/index.html#use-of-exclude-and-include-filters
 
@@ -38,7 +38,7 @@ class DeploymentProps:
         command. Since all files from the deployment package are included by default, this property
         is usually leveraged alongside an `exclude` filter.
 
-        By default no include filters are used and all files are included with the sync command.
+        By default, no include filters are used and all files are included with the sync command.
 
         More info: https://docs.aws.amazon.com/cli/latest/reference/s3/index.html#use-of-exclude-and-include-filters
 
@@ -70,10 +70,15 @@ class DeploymentProps:
 
         Default is 256.
 
+    ``ephemeral_storage_size``
+        The size of the function’s /tmp directory in MiB.
+
+        Default value is set by ``aws-cdk.aws-lambda.Function``.
+
     ``use_efs``
         Mount an EFS file system. Enable this if your assets are large and you encounter disk space errors.
 
-        By default EFS is not used. Lambda has access only to 512MB of disk space.
+        By default, EFS is not used. Lambda has access only to 512MB of disk space.
 
     ``efs_props``
         Custom EFS properties. If not set, default properties are used.
@@ -81,33 +86,33 @@ class DeploymentProps:
     ``role``
         Execution role associated with this function.
 
-        By default role is automatically created.
+        By default, role is automatically created.
 
     ``content_encoding``
         System-defined content-encoding metadata to be set on all objects in the deployment.
 
-        By default content encoding is not set.
+        By default, content encoding is not set.
 
         https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#SysMetadata
 
     ``content_language``
         System-defined content-language metadata to be set on all objects in the deployment.
 
-        By default content language is not set.
+        By default, content language is not set.
 
         https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#SysMetadata
 
     ``content_type``
         System-defined content-type metadata to be set on all objects in the deployment.
 
-        By default content type is not set.
+        By default, content type is not set.
 
         https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#SysMetadata
 
     ``expires``
         System-defined expires metadata to be set on all objects in the deployment.
 
-        By default the objects in the distribution will not expire.
+        By default, the objects in the distribution will not expire.
 
         https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#SysMetadata
 
@@ -126,7 +131,7 @@ class DeploymentProps:
     ``vpc_subnets``
         Where in the VPC to place the deployment lambda handler. Only used if 'vpc' is supplied.
 
-        By default the Vpc default strategy is used if not specified otherwise.
+        By default, the Vpc default strategy is used if not specified otherwise.
     """
 
     destination_key_prefix: str = None
@@ -135,6 +140,7 @@ class DeploymentProps:
     prune: bool = True
     retain_on_delete: bool = True
     memory_limit: int = 256
+    ephemeral_storage_size: int = None
     use_efs: bool = False
     efs_props: EfsProps = None
     role: IRole = None
