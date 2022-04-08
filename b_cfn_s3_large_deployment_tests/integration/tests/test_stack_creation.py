@@ -16,4 +16,7 @@ def test_stack_created() -> None:
 
     stack_name = Infrastructure.name()
     stack = Stack.from_name(stack_name)
-    assert stack.stack_status == StackStatus.CREATE_COMPLETE
+    assert stack.stack_status in [
+        StackStatus.CREATE_COMPLETE,
+        StackStatus.UPDATE_COMPLETE
+    ]
