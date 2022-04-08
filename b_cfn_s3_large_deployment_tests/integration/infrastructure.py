@@ -29,6 +29,11 @@ class Infrastructure(TestingStack):
         destination_bucket_name='LargeDeploymentDestinationBucketName',
         destination_bucket_key_prefix='LargeDeploymentDestinationBucketPrefixKey',
     )
+    LARGE_EFS_DEPLOYMENT_OUTPUT_KEYS = __DeploymentOutputKeys(
+        source_name='large_dummy_deployment',
+        destination_bucket_name='LargeEfsDeploymentDestinationBucketName',
+        destination_bucket_key_prefix='LargeEfsDeploymentDestinationBucketPrefixKey',
+    )
 
     def __init__(self, scope: Construct):
         super().__init__(scope=scope)
@@ -64,7 +69,7 @@ class Infrastructure(TestingStack):
         small_dummy_deployment_source = AssetDeploymentSource(
             os.path.join(dummy_deployments_dirpath, self.SMALL_DEPLOYMENT_OUTPUT_KEYS.source_name))
         large_dummy_deployment_source = AssetDeploymentSource(
-            os.path.join(dummy_deployments_dirpath, self.LARGE_DEPLOYMENT_OUTPUT_KEYS.source_name))
+            os.path.join(dummy_deployments_dirpath, self.LARGE_EFS_DEPLOYMENT_OUTPUT_KEYS.source_name))
 
         small_deployment = S3LargeDeploymentResource(
             scope=self,
@@ -78,16 +83,25 @@ class Infrastructure(TestingStack):
                 retain_on_delete=False
             )
         )
-
         large_deployment = S3LargeDeploymentResource(
             scope=self,
             name=f'{self.global_prefix()}LargeDummyDeployment',
-            sources=[
-                large_dummy_deployment_source
-            ],
+            sources=[large_dummy_deployment_source] * 2,
             destination_bucket=testing_destination_bucket,
             props=DeploymentProps(
                 destination_key_prefix='large/',
+                retain_on_delete=False,
+                memory_limit=1024,
+                ephemeral_storage_size=1024
+            )
+        )
+        large_efs_deployment = S3LargeDeploymentResource(
+            scope=self,
+            name=f'{self.global_prefix()}LargeEfsDummyDeployment',
+            sources=[large_dummy_deployment_source],
+            destination_bucket=testing_destination_bucket,
+            props=DeploymentProps(
+                destination_key_prefix='large-efs/',
                 retain_on_delete=False,
                 memory_limit=1024,
                 use_efs=True,
@@ -98,6 +112,7 @@ class Infrastructure(TestingStack):
 
         self.__add_deployment_outputs(self.SMALL_DEPLOYMENT_OUTPUT_KEYS, small_deployment)
         self.__add_deployment_outputs(self.LARGE_DEPLOYMENT_OUTPUT_KEYS, large_deployment)
+        self.__add_deployment_outputs(self.LARGE_EFS_DEPLOYMENT_OUTPUT_KEYS, large_efs_deployment)
 
     def __add_deployment_outputs(
             self,
