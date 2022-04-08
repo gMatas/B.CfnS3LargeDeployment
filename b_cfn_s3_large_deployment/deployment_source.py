@@ -7,6 +7,13 @@ from aws_cdk.aws_s3_assets import AssetOptions, Asset
 from aws_cdk.core import Construct
 
 
+__all__ = [
+    'BaseDeploymentSource',
+    'AssetDeploymentSource',
+    'BucketDeploymentSource',
+]
+
+
 @dataclass(frozen=True)
 class DeploymentSourceConfig:
     """
