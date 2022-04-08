@@ -32,7 +32,7 @@ jobs:
           npm --version
           npm install -g aws-cdk@1.x
           cdk --version
-          python -m pip install . --upgrade
+          python -m pip install . --upgrade --use-deprecated=legacy-resolver
           python -m pip list
 
       - name: Integration test
