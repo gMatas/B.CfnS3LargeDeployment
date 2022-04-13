@@ -61,9 +61,13 @@ pip install b-cfn-s3-large-deployment
 This AWS CloudFormation custom resource is used pretty much the same way as any other resource. Simply initialize it 
 within any valid CDK scope giving it unique name/id, providing source(-s) and the destination for the deployment. 
 
-Optionally, if there's a need for larger files deployment than what AWS Lambda's `/tmp` directory supports, setting the 
-`DeploymentPops.use_efs` and `DeploymentPops.efs_props` fields, AWS Elastic File Storage (EFS) can be enabled to allow 
-such files handling.
+The deployment of files depends on AWS Lambda's `/tmp` directory and its size limits. For large files `/tmp` directory 
+size can be configured using Ephemeral storage (`DeploymentProps.ephemeral_storage_size`) supported by AWS Lambda 
+functions. 
+
+Optionally, if there's a need for even larger files deployment than what AWS Lambda's `/tmp` directory supports, 
+setting the `DeploymentPops.use_efs` and `DeploymentPops.efs_props` fields, AWS Elastic File Storage (EFS) can be 
+enabled to allow such files handling.
 
 A simple example of `S3LargeDeploymentResource` usage is shown below:
 
@@ -137,11 +141,7 @@ maintaining original file structure of source contents.
 - `aws_cdk.aws_s3_assets.Asset` supports up to 2GB/asset (limited by NodeJS implementation).
 - S3 bucket supports up to 5TB objects.
 
-### Testing
-
-No throughout testing is yet implemented - only a single integration test, checking the success of `cdk synth` command.
-
 ### Contribution
 
 Found a bug? Want to add or suggest a new feature? Contributions of any kind are gladly
-welcome. Contact your direct supervisor, create a pull-request or an issue in Jira platform.
+welcome. Contact us, create a pull-request or an issue ticket.
